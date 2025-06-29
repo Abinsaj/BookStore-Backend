@@ -37,9 +37,8 @@ export default class AuthService{
         const payload = { userId: user._id, role : user.role}
 
         let token = creatToken(payload)
-        let refreshToken = createRefreshToken(payload)
 
-        return {token,refreshToken, user}
+        return {token, user}
 
     }
 

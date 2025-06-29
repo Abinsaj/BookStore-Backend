@@ -14,7 +14,7 @@ export default class AuthController {
             console.log('its herer')
             const { email, password } = req.body;
             const { token, refreshToken, user } = await authService.login({ email, password });
-            res.status(200).json({ success: true, token, refreshToken, data: user });
+            res.status(200).json({ success: true, token, data: user });
         })
     
 }

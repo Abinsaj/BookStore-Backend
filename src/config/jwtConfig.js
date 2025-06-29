@@ -12,10 +12,4 @@ const creatToken = (payload) =>{
     })
 }
 
-const createRefreshToken = (payload)=>{
-    return jwt.sign(payload,secret_key,{
-        expiresIn:"7d"
-    })
-}
-
 export { creatToken, createRefreshToken }
