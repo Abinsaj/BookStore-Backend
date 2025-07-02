@@ -66,13 +66,12 @@ A robust Node.js backend for an online bookstore, designed with clean architectu
 
 Example logic:
 
-```js
 await BookModel.findByIdAndUpdate(
   bookId,
   { $inc: { sellCount: quantity } },
   { new: true }
 );
-```
+
 
 * ✅ **Atomicity:** `$inc` is a server-side operation; avoids race conditions if multiple purchases happen at once.
 * ✅ **Data Integrity:** Ensures accurate tracking for analytics and popularity ranking.
@@ -81,9 +80,6 @@ await BookModel.findByIdAndUpdate(
 
 ## 📧 Mechanism for Sending Email Notifications
 
-> **Why async?**
-> Emails are processed using a **background job queue** to avoid slowing down user-facing requests.
-
 **How it works:**
 
 1. **BullMQ Queue:**
@@ -91,20 +87,20 @@ await BookModel.findByIdAndUpdate(
    * Configured with Redis.
    * `limiter` ensures **max 100 emails/minute** to avoid SMTP throttling.
 
-   ```js
+
    export const emailQueue = new Queue('emailQueue', { connection, limiter: { max: 100, duration: 60000 } });
-   ```
+
 
 2. **Job Creation:**
 
    * When a purchase occurs, `PurchaseService` enqueues a job:
 
-   ```js
+
    await emailQueue.add('authorNotification', {
      authorId: book.authors,
      purchaseDetails: { bookTitle: book.title, price: book.price, quantity }
    });
-   ```
+
 
 3. **Worker:**
 
@@ -168,7 +164,7 @@ await BookModel.findByIdAndUpdate(
 
 Create a `.env` file:
 
-```env
+env
 PORT=5000
 
 MONGO_URI=mongodb://localhost:27017/bookstore
@@ -179,9 +175,9 @@ REDIS_PORT=6379
 
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USER=your-email@gmail.com
-SMTP_PASS=your-app-password
-```
+EMAIL=your-email@gmail.com
+EMAIL_PASSWORD=your-app-password
+
 
 **Note:** For Gmail, use an **App Password** for secure SMTP.
 
@@ -191,35 +187,27 @@ SMTP_PASS=your-app-password
 
 1. **Clone**
 
-   ```bash
    git clone https://github.com/yourusername/bookstore-backend.git
    cd bookstore-backend
-   ```
+
 
 2. **Install Dependencies**
 
-   ```bash
+
    npm install
-   ```
+
 
 3. **Start MongoDB & Redis**
 
-   ```bash
-   brew services start mongodb-community
    redis-server
-   ```
 
 4. **Start the Server**
 
-   ```bash
    npm run dev
-   ```
 
 5. **Start the Worker**
 
-   ```bash
    node src/workers/emailWorker.js
-   ```
 
 ---
 
